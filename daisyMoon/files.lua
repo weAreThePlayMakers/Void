@@ -18,6 +18,8 @@ local mapPath		= settings.paths.maps
 dofile(entitiesPath .."entity.lua")
 dofile(entitiesPath .."debug_line.lua")
 dofile(entitiesPath .."debug_point.lua")
+dofile(entitiesPath .."player.lua")
+dofile(entitiesPath .."platform.lua")
 
 --[[
                                                                                                          

@@ -23,7 +23,7 @@ function entities.create(type, params)
 				entity.map = mapsystem.getCurrent()
 			else
 				--Simply a placeholder if there is no mapsystem.
-				entitiy.map = {name = "default"}
+				entity.map = {name = "default"}
 			end
 
 			local tempEntity
@@ -76,7 +76,7 @@ end
 --is no mapsystem in place and the removeByMap function is called all entities will be destroyed.
 
 function entities.destroy(entity)
-	entity:onDestroy()
+	entity:destroy()
 
 	objects[entity.id] = nil
 end

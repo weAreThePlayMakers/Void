@@ -5,8 +5,8 @@ dofile("lib/lib.lua")
 dofile("gamestate.lua")
 dofile("settings.lua")
 dofile("gamedata.lua")
-dofile("entities.lua")
 dofile("mapsystem.lua")
+dofile("entities.lua")
 
 dofile("files.lua")
 

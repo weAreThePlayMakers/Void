@@ -2,45 +2,53 @@
 local function load()
 	local map = {}
 
-	local speed = 2
+	map.x = 2
+	map.players = {}
+	map.platforms = {}
 
-	local lines = {}
-	local linecount = 100
-	local rotation = 2 * math.pi / linecount
+	local playerId = 1
+	local platformId = 1
 
-	local offsets = {}
-	local points = {}
+	local function createPlayer(x, y)
+		local player = entities.create("player", {x = x, y = y})
 
-	local lx = 0
-	local ly = 0
+		player.id = playerId
+
+		map.players[playerId] = player
+
+		playerId = playerId + 1
+	end
+
+	local function createPlatform(x, y, w, h)
+		local platform = entities.create("platform", {x = x, y = y, w = w, h = h})
+
+		platform.id = platformId
+
+		map.platforms[platformId] = platform
+
+		platformId = platformId + 1
+	end
 
 	function map.load()
-		for i = 1, linecount, 1 do
-			local line = entities.create("debug_line",{x2 = math.cos(math.pi / linecount + i) * 250, y2 = math.sin(math.pi / linecount + i) * 250})
-			lines[i] = line
-			offsets[i] = math.random(0, 50)
+		createPlayer(25, 25)
 
-			local point = entities.create("debug_point",{size = 0.025})
-			points[i] = point
+		for i=0, 4, 1 do
+			createPlatform(-128 * 1.5 - 256 + 64 * i, 64 * i, 128, 10)
+			createPlatform(128 * 1.5 - 64, 86 * i, 128, 10)
 		end
+
+		for i=0, 3, 1 do
+			createPlatform(-64, 64 * i * 2, 128, 10)
+		end
+
+		createPlatform(-1680 / 2, 1050 / 2 - 64, 1680, 24)
+
+		createPlatform(750, 0 / 2, 24, 1050 / 2 - 128)
+		createPlatform(-750, 0 / 2, 24, 1050 / 2 - 128)
 	end
 
 	function map.update(dt)
-		for i, line in pairs(lines) do
-			local rot = (2 * math.pi / linecount) * i + _time / 10 * speed
 
-			line.x = lx
-			line.y = ly
-
-			line.x2 = math.cos(rot + offsets[i] * math.sin(_time / 10000)) * 800
-			line.y2 = math.sin(rot + offsets[i]) * 100
-
-			lx = line.x2
-			ly = line.y2
-
-			points[i].x = lx
-			points[i].y = ly
-		end
 	end
 
 	return map

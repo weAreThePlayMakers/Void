@@ -28,14 +28,14 @@ function mapsystem.load(name)
 		end
 
 		if map.load then
+			current = map
+
+			loaded[map.name] = map
+			
 			map.load()
 		else
 			print("Mapsystem: The map with the name of '" ..name .."' does not contain a load function and will be ignored.")
 		end
-
-		current = map
-
-		loaded[map.name] = map
 
 		return true
 

@@ -31,10 +31,6 @@ local function create()
 		
 	end
 
-	function entity:onDestroy()
-		
-	end
-
 	return entity
 end
 
