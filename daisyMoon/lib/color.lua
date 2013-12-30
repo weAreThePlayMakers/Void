@@ -49,19 +49,36 @@ function color.lerp(color, endColor, dt)
 	return c
 end
 
-function color.offset(color, offset)
+function color.offset(color, offset, a, r, g, b)
 	c = {}
 
-	c.a = math.clamp(math.random(color.a - offset, color.a + offset), 0, 255)
-	c.r = math.clamp(math.random(color.r - offset, color.r + offset), 0, 255)
-	c.g = math.clamp(math.random(color.g - offset, color.g + offset), 0, 255)
-	c.b = math.clamp(math.random(color.b - offset, color.b + offset), 0, 255)
+	if a == nil or a == true then c.a = math.clamp(math.random(color.a - offset, color.a + offset), 0, 255)
+	else c.a = color.a end
+
+	if r == nil or r == true then c.r = math.clamp(math.random(color.r - offset, color.r + offset), 0, 255)
+	else c.r = color.r end
+
+	if g == nil or g == true then c.g = math.clamp(math.random(color.g - offset, color.g + offset), 0, 255)
+	else c.g = color.g end
+
+	if b == nil or b == true then c.b = math.clamp(math.random(color.b - offset, color.b + offset), 0, 255)
+	else c.b = color.b end
+
+	return c
+end
+
+function color.clamp(color)
+	c = {}
+
+	c.a = math.clamp(color.a, 0, 255)
+	c.r = math.clamp(color.r, 0, 255)
+	c.g = math.clamp(color.g, 0, 255)
+	c.b = math.clamp(color.b, 0, 255)
 
 	return c
 end
 
 --COLOR DATABASE
-
 color.black 	= color.createRGB(  0,   0,   0)
 color.grey 		= color.createRGB(128, 128, 128)
 color.white 	= color.createRGB(255, 255, 255)

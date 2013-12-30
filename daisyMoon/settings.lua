@@ -1,6 +1,8 @@
 
 settings = {}
 
+settings.debug = true
+
 settings.window = {}
 settings.window.w = 1680
 settings.window.h = 1050

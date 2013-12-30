@@ -7,21 +7,28 @@ local database = {}
 function gamedata.load(dataName, fileName)
 	if not database[dataName] then
 		database[dataName] = video.createSpriteState(dataName, gamedataPath ..fileName)
+
 		return dataName
 	else
 		print("Gamedata: The gamedata entry with the name of '" ..dataName .."' already exists and so has not been loaded again.")
 	end
 end
 
-function gamedata.loadSet(dataSet)
+--I'VE NOT HAD THE TIME TO FINISH THIS.
+--STILL HAS A TON OF PROBLEMS
+
+--[[function gamedata.loadSet(dataSet)
 	for i, data in pairs(dataSet) do
 		if not database[data] then
-			database[data] = video.createSpriteState(data, gamedataPath ..fileName)
+			database[data] = video.createSpriteState(data, gamedataPath ..data[i].fileName)
+
+			--We render the sprite once to avoid frame breaks during gameplay
+			gamedata.preload[data] = data[i].fileName
 		else
 			print("Gamedata: The gamedata entry with the name of '" ..data .."' already exists and so has not been loaded again.")
 		end
 	end
-end
+end]]
 
 function gamedata.unload(dataName)
 	if database[dataName] then

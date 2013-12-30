@@ -143,12 +143,11 @@ function gamestate.setState(name)
 end
 
 --By using the getState function we can access a certain state and add or remove callbacks.
-
-function gamestate.getCurrent()
-	return stateStack[currentState]
+function gamestate.getState()
+	return currentState
 end
 
-function gamestate.getState(name)
+function gamestate.getReference(name)
 	if stateStack[name] then
 		return stateStack[name]
 	else
@@ -157,7 +156,6 @@ function gamestate.getState(name)
 end
 
 --These functions can be used to add function hooks to states
-
 function gamestate.addHook(name, func, param, bool)
 	if stateStack[name] then
 		if bool == true then
@@ -187,7 +185,6 @@ function gamestate.addEndHook(name, func, param)
 end
 
 --Update states are called each frame and can not be interchange like a normal state.
-
 function gamestate.addUpdateState(name, func)
 	if not updateStack[name] then
 		if func then
@@ -221,16 +218,15 @@ function gamestate.popFixedUpdateState(name)
 end
 
 --Render states are called each render and can not be interchange like a normal state.
-
-function gamestate.addRenderState(name, func)
-	if not renderStack[name] then
+function gamestate.addRenderState(index, id, name, func)
+	if not renderStack[index] then
 		if func then
-			renderStack[name] = func
+			renderStack[index] = {id = id, name = name, func = func}
 		else
-			print("Gamestate: The render state with the name of '" ..name .."' does not include a function in the parameters and will so be ignored")
+			print("Gamestate: The render state with the index of '" ..index .."' does not include a function in the parameters and will so be ignored")
 		end
 	else
-		print("Gamestate: The render state with the name of '" ..name .."' is already in the render stack.")
+		print("Gamestate: The render state with the index of '" ..index .."' is already in the render stack.")
 	end
 end
 
@@ -254,6 +250,6 @@ end
 
 function gamestate.render()
 	for i, state in pairs(renderStack) do
-		state()
+		state.func(state.id, state.name)
 	end
 end

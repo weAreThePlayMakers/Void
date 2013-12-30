@@ -7,6 +7,8 @@ local function create()
 
 	platform.color = color.white
 
+	platform.state.renderlayers = 1
+
 	function platform:construct(params)
 		if params.x then self.x = params.x end
 		if params.y then self.y = params.y end
@@ -20,7 +22,7 @@ local function create()
 	end
 
 	function platform:render(layer)
-		if layer == "mg" then
+		if layer == "background" then
 			local x, y = camera.translate(self.x, self.y)
 			video.renderRectangle(x, y, self.w, self.h, self.color.a, self.color.r, self.color.g, self.color.b)
 		end

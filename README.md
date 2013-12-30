@@ -9,7 +9,6 @@ Collaborators
 **Catlinman** <br/>
 - [Twitter](https://twitter.com/Catlinman_)<br/>
 - [Tumblr Blog](http://xcatlinman.tumblr.com/)<br/>
-- [Portfolio](http://catlinman.com)<br/>
 
 **Jokler**<br/>
 - [Twitter](https://twitter.com/Jokler13)<br/>

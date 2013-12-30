@@ -73,11 +73,11 @@ end
 function mouse.checkAny()
 	for i, mouseKey in pairs(mouseKeyGroup) do
 		if mouseKey.pressed then
-			return true
+			return mouseKey.num
 		end
 	end
 
-	return false
+	return -1
 end
 
 --Use this function to check if a key was pressed even if it is not in the table of registered keys.

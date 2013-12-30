@@ -4,13 +4,15 @@ local function create()
 	
 	entity.x = 0
 	entity.y = 0
+
 	entity.state = {}
 	entity.state.active = true
 	entity.state.render = true
+	entity.state.renderlayers = 1
 
 	function entity:construct(params)
-		if params.x then self.x = params.x end
-		if params.y then self.y = params.y end
+		self.x = params.x or self.x
+		self.y = params.y or self.y
 
 		return self
 	end
@@ -28,6 +30,10 @@ local function create()
 	end
 
 	function entity:destroy()
+		
+	end
+
+	function entity:onDestroy()
 		
 	end
 

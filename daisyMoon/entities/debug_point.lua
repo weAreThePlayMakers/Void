@@ -10,24 +10,27 @@ local function create()
 
 	point.color = color.white
 
+	point.state.renderlayers = 3
+
 	function point:construct(params)
-		if params.x then self.x = params.x end
-		if params.y then self.y = params.y end
+		self.x = params.x or self.x
+		self.y = params.y or self.y
 
-		if params.color then self.color = params.color end
+		self.color = params.color or self.color
 
-		if params.size then self.size = params.size end
+		self.size = params.size or self.size
 
-		if params.rot then self.rot = params.rot end
+		self.rot = params.rot or self.rot
 
-		if params.sprite then self.sprite = params.sprite end
+		self.sprite = params.sprite or self.sprite
 
 		return self
 	end
 
 	function point:render(layer)
-		if layer == "fg" then
+		if layer == "foreground" then
 			local x, y = camera.translate(self.x, self.y)
+
 			video.renderSpriteState(self.sprite, x, y, self.size, self.rot, self.color.a, self.color.r, self.color.g, self.color.b)
 		end
 	end

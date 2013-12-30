@@ -1,3 +1,8 @@
+local numTable = {-1, 1}
+
+function math.randNonNull()
+	return numTable[math.random(1,2)]
+end
 
 function math.clamp(num, min, max)
 	if num < min and min < max then num = min end
@@ -5,8 +10,43 @@ function math.clamp(num, min, max)
 	return num
 end
 
-function math.lerp(num, endNum, dt)
-	return num + (endNum - num) * dt
+function math.cycle(num, min, max)
+	local tick = 0
+
+	while num < min or num > max and tick < 10 do
+		tick = tick + 1
+
+		if num < min and min < max then
+			local dist = min - num
+
+			num = max - dist
+
+		elseif num > max and max > min then
+			local dist = max - num
+
+			num = min + dist
+		end
+
+		if tick == 10 then
+			return clamp(num, min, max)
+		end
+	end
+
+	return num
+end
+
+function math.lerp(num, endNum, t)
+	return num + (endNum - num) * t
+end
+
+function math.step(num, endNum, s)
+	if endNum < num then
+		num = math.max(num - s, endNum)
+	else
+		num = math.min(num + s, endNum)
+	end
+
+	return num
 end
 
 function math.percent(startNum, endNum, percent)
@@ -58,6 +98,28 @@ function math.lerpDeg(angle, endAngle, dt)
 	local rangeZero = 360
 
 	if(value >= 0 and value <= 360) then
+		return value
+	else
+		return value % rangeZero
+	end
+end
+
+function math.lerpRad(angle, endAngle, dt)
+	local difference = math.abs(endAngle - angle)
+
+    if difference > math.pi then
+        if endAngle > angle then
+            angle = angle + (math.pi * 2)
+        else
+        	endAngle = endAngle + (math.pi * 2)
+        end
+    end
+
+	local value = angle + (endAngle - angle) * dt
+
+	local rangeZero = (math.pi * 2)
+
+	if(value >= 0 and value <= (math.pi * 2)) then
 		return value
 	else
 		return value % rangeZero

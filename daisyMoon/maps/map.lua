@@ -2,9 +2,13 @@
 local function load()
 	local map = {}
 
-	map.x = 2
 	map.players = {}
 	map.platforms = {}
+
+	map.state = {}
+	map.state.render 		= true
+	map.state.update 		= true
+	map.state.fixedUpdate 	= true
 
 	local playerId = 1
 	local platformId = 1

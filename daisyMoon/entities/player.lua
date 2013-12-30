@@ -22,6 +22,8 @@ local function create()
 
 	player.color = color.white
 
+	player.state.renderlayers = 3
+
 	function player:construct(params)
 		if params.x then self.x = params.x end
 		if params.y then self.y = params.y end
@@ -99,7 +101,7 @@ local function create()
 	end
 
 	function player:render(layer)
-		if layer == "fg" then
+		if layer == "foreground" then
 			local x, y = camera.translate(self.x, self.y)
 			video.renderRectangle(x, y, self.w, self.h, self.color.a, self.color.r, self.color.g, self.color.b)
 		end
