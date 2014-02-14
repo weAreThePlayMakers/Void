@@ -41,7 +41,6 @@ function camera.create()
 	return cam
 end
 
-
 function camera.push(cam)
 	if cam.x and cam.y and cam.sx and cam.sy and cam.rot then
 		current = cam
@@ -60,7 +59,6 @@ function camera.pushRotation(r)
 	current.rot = r
 end
 
-
 function camera.get()
 	return current
 end
@@ -75,24 +73,6 @@ end
 
 function camera.getRotation()
 	return current.rot
-end
-
-
-function camera.translate(x1, y1)
-	local width, height = video.getScreenSize()
-	local x2, y2 = x1 - current.x + width / 2, y1 - current.y + height / 2
-	return x2, y2
-end
-
-function camera.translateScreen(x1, y1)
-	local x2, y2 = x1 + (current.x - x1), y1 + (current.y - y1)
-	return x2, y2
-end
-
-function camera.translateParralax(x1, y1, speed)
-	local width, height = video.getScreenSize()
-	local x2, y2 = x1 - current.x * speed + width / 2, y1 - current.y * speed  + height / 2
-	return x2, y2
 end
 
 current = camera.create()

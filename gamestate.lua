@@ -5,7 +5,7 @@ local currentState = ""
 local stateStack 	= {}
 local updateStack 	= {}
 local fixedUpdateStack = {}
-local renderStack	= {}
+local drawStack	= {}
 
 --[[
 	                                                                                                               
@@ -127,22 +127,23 @@ function gamestate.setState(name)
 	if stateStack[name] then
 		local state = stateStack[name] 
 		
-		--Call every function inside the last states endHooks table
+		-- Call every function inside the last states endHooks table
 		for i, callback in pairs(state.endHooks) do
 			callback.func(callback.param)
 		end
 
-		--Assign the given state to the new current state.
+		-- Assign the given state to the new current state.
 		currentState = name
 
-		--Call every function inside the new states startHooks table
+		-- Call every function inside the new states startHooks table
 		for i, callback in pairs(state.startHooks) do
 			callback.func(callback.param)
 		end
 	end
 end
 
---By using the getState function we can access a certain state and add or remove callbacks.
+-- By using the getState function we can access a certain state and add or remove callbacks.
+
 function gamestate.getState()
 	return currentState
 end
@@ -155,7 +156,8 @@ function gamestate.getReference(name)
 	end
 end
 
---These functions can be used to add function hooks to states
+-- These functions can be used to add function hooks to states
+
 function gamestate.addHook(name, func, param, bool)
 	if stateStack[name] then
 		if bool == true then
@@ -184,7 +186,8 @@ function gamestate.addEndHook(name, func, param)
 	end
 end
 
---Update states are called each frame and can not be interchange like a normal state.
+-- Update states are called each frame and can not be interchange like a normal state.
+
 function gamestate.addUpdateState(name, func)
 	if not updateStack[name] then
 		if func then
@@ -217,24 +220,37 @@ function gamestate.popFixedUpdateState(name)
 	fixedUpdateStack[name] = nil
 end
 
---Render states are called each render and can not be interchange like a normal state.
-function gamestate.addRenderState(index, id, name, func)
-	if not renderStack[index] then
+-- Draw states are called each draw and can not be interchange like a normal state.
+
+function gamestate.addDrawState(index, id, name, func)
+	if not drawStack[index] then
 		if func then
-			renderStack[index] = {id = id, name = name, func = func}
+			drawStack[index] = {id = id, name = name, func = func}
 		else
-			print("Gamestate: The render state with the index of '" ..index .."' does not include a function in the parameters and will so be ignored")
+			print("Gamestate: The draw state with the index of '" ..index .."' does not include a function in the parameters and will so be ignored")
 		end
 	else
-		print("Gamestate: The render state with the index of '" ..index .."' is already in the render stack.")
+		print("Gamestate: The draw state with the index of '" ..index .."' is already in the draw stack.")
 	end
 end
 
-function gamestate.popRenderState(name)
-	updateStack[name] = nil
+function gamestate.popDrawState(id)
+	drawStack[id] = nil
 end
 
---Handling of gamestates inside the update calls as well as the main render call.
+-- Returns the names of all the states inside the draw stack.
+
+function gamestate.getDrawStack()
+	local nameTable = {}
+
+	for i, layer in pairs(drawStack) do
+		nameTable[layer.id] = layer.name
+	end
+
+	return nameTable
+end
+
+-- Handling of gamestates inside the update calls as well as the main draw call.
 
 function gamestate.update(dt)
 	for i, state in pairs(updateStack) do
@@ -248,8 +264,11 @@ function gamestate.fixedUpdate(timestep)
 	end
 end
 
-function gamestate.render()
-	for i, state in pairs(renderStack) do
+function gamestate.draw()
+	for i, state in pairs(drawStack) do
+		-- We reset the color to avoid layer leaking
+		love.graphics.setColor(255, 255, 255, 255)
+
 		state.func(state.id, state.name)
 	end
 end

@@ -1,4 +1,9 @@
 
+-- WARNING: There are currently a ton of issues with the mapsystem.
+--> New maps are loaded on top of others making it hard for the system to handle entities bound to maps.
+--> The overlay argument needs more work.
+--> Entities should have more options to work together. This means that maps should act as worlds which handle large collision. (Possibly Quad-Trees)
+
 mapsystem = {}
 
 local mapPath = settings.paths.maps
@@ -61,7 +66,9 @@ function mapsystem.load(name, overlay)
 			return false
 		end
 	else
-		--print("Mapsystem: The map with the name of '" ..name .."' was not found. Make sure that it has been correctly added to the map database.")
+		if settings.debug == true then
+			print("Mapsystem: The map with the name of '" ..name .."' was not found. Make sure that it has been correctly added to the map database.")
+		end
 
 		return false
 	end
@@ -137,17 +144,17 @@ function mapsystem.fixedUpdate(timestep)
 	end
 end
 
-function mapsystem.render(layerID, layerName)
+function mapsystem.draw(layerID, layerName)
 	for i, map in pairs(loaded) do
-		if map.state.render ~= nil then
-			if map.state.render == true then
-				if map.render then
-					map.render(layerName)
+		if map.state.draw ~= nil then
+			if map.state.draw == true then
+				if map.draw then
+					map.draw(layerName)
 				end
 			end
 		else
-			if map.render then
-				map.render(layerName)
+			if map.draw then
+				map.draw(layerName)
 			end
 		end
 	end

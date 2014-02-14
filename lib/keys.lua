@@ -17,7 +17,7 @@ function keys.addKey(name, keycode)
 
 		keygroup[key.name] = key
 	else
-		keygroup[name].keycode[table.getn(keygroup[name].keycode) + 1] = keycode
+		keygroup[name].keycode[table.length(keygroup[name].keycode) + 1] = keycode
 	end
 end
 
@@ -51,7 +51,7 @@ function keys.release()
 		stillpressed = false
 
 		for k, code in pairs(key.keycode) do
-			if daisy.isKeyPressed(code) then
+			if love.keyboard.isDown(code) then
 				stillpressed = true
 				break
 			end
@@ -65,7 +65,7 @@ function keys.release()
 	end
 
 	if lastKeycode then
-		if not daisy.isKeyPressed(lastKeycode) then
+		if not love.keyboard.isDown(lastKeycode) then
 			lastKeycode = 0
 		end
 	end
@@ -98,7 +98,7 @@ end
 function keys.getPressedNum()
 	count = 0
 	for i, key in pairs(keygroup) do
-		if(key.pressed) then count = count + 1 end
+		if key.pressed == true then count = count + 1 end
 	end
 
 	return count

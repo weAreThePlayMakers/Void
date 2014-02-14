@@ -6,14 +6,7 @@ local objects = {}
 local database = {}
 local id = 0
 
-local renderlayers = {}
-
---Here are some predefined renderlayers:
-renderlayers[1] = "background"
-renderlayers[2] = "midground"
-renderlayers[3] = "forground"
-renderlayers[4]	= "gui"
-renderlayers[5] = "gui2"
+local drawStack = {}
 
 --Use this function to add new files to the entity register. Should be done at the end of newly loaded files.
 function entities.add(type, func)
@@ -29,8 +22,7 @@ function entities.create(type, params, ignoreStates, grouping)
 
 		if entity ~= nil then
 			entity.type = type
-			
-
+		
 			if mapsystem then
 				if grouping == nil then
 					entity.map = mapsystem.getCurrent()
@@ -90,9 +82,11 @@ function entities.extend(type)
 	end
 end
 
---Entities can be removed from the game by using either one of these functions. It should be taken into respect that remove entities by map
---should be used in combination with the mapsystem file. Otherwise all entities will be assigned to a default map. This means that if there
---is no mapsystem in place and the removeByMap function is called all entities will be destroyed.
+-- Entities can be removed from the game by using either one of these functions. It should be taken into respect that remove entities by map
+-- should be used in combination with the mapsystem file. Otherwise all entities will be assigned to a default map. This means that if there
+-- is no mapsystem in place and the removeByMap function is called all entities will be destroyed.
+
+-- The silent argument allows the entity to be destroyed without calling it's onDestroy method. This should not be abused as it can cause the entity to break the game logic.
 
 function entities.destroy(entity, silent)
 	if not silent then entity:onDestroy() end
@@ -138,36 +132,42 @@ function entities.fixedUpdate(timestep)
 	end
 end
 
-function entities.render(layerID, layerName)
+function entities.draw(layerID, layerName)
 	for i, ent in pairs(objects) do
-		local t = type(ent.state.renderlayers)
+		local t = type(ent.state.drawStack)
 
 		if t ~= "table" then
-			if ent.state.renderlayers == layerID or ent.state.renderlayers == layerName then
+			if ent.state.drawStack == layerID or ent.state.drawStack == layerName then
 				if ent.ignoreStates == false then
-					if ent.state.render then
-						if ent.map.state.render == true then
-							ent:render(layerName)
+					if ent.state.draw then
+						if ent.map.state.draw == true then
+							ent:draw(layerName)
 						end
 					end
 				else
-					ent:render(layerName)
+					ent:draw(layerName)
 				end
 			end
 		else
-			for n, l in pairs(ent.state.renderlayers) do
+			for n, l in pairs(ent.state.drawStack) do
 				if l == layerID or l == layerName then
 					if ent.ignoreStates == false then
-						if ent.state.render then
-							if ent.map.state.render == true then
-								ent:render(layerName)
+						if ent.state.draw then
+							if ent.map.state.draw == true then
+								ent:draw(layerName)
 							end
 						end
 					else
-						ent:render(layerName)
+						ent:draw(layerName)
 					end
 				end
 			end
 		end
 	end
+end
+
+-- This function is used to update the current draw stack so that entities can interface with the layer based drawing we created.
+
+function entities.updateDrawStack(stack)
+	drawStack = stack
 end

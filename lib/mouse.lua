@@ -9,12 +9,12 @@ local mouseKeyGroup = {}
 local mousePressedThisUpdate = false
 
 --We can use this function to add keys to the table of mousekeys.
-function mouse.addKey(name, num)
+function mouse.addKey(name, keycode)
 	if(not mouseKeyGroup[name]) then
 		local mouseKey = {}
 
 		mouseKey.name = name
-		mouseKey.num = num
+		mouseKey.keycode = keycode
 
 		mouseKey.pressed = false
 
@@ -34,13 +34,13 @@ function mouse.popKey(name)
 end
 
 --Mouse.press is used to register mouse presses. It should be called in the games main.lua/mousePress function.
-function mouse.press(x, y, num)
+function mouse.press(x, y, keycode)
 	pressedx = x
 	pressedy = y
-	lastKeycode = num
+	lastKeycode = keycode
 
 	for i, mouseKey in pairs(mouseKeyGroup) do
-		if(num == mouseKey.num) then
+		if(keycode == mouseKey.keycode) then
 			mouseKey.pressed = true
 
 			return
@@ -52,12 +52,12 @@ end
 --This function should be called done every update.
 function mouse.release()
 	for i, mouseKey in pairs(mouseKeyGroup) do
-		if not daisy.isMouseButtonPressed(mouseKey.num) then
+		if not love.mouse.isDown(mouseKey.keycode) then
 			mouseKey.pressed = false
 		end
 	end
 
-	if not daisy.isMouseButtonPressed(lastKeycode) then
+	if not love.mouse.isDown(lastKeycode) then
 		lastKeycode = -1
 	end
 end
@@ -73,7 +73,7 @@ end
 function mouse.checkAny()
 	for i, mouseKey in pairs(mouseKeyGroup) do
 		if mouseKey.pressed then
-			return mouseKey.num
+			return mouseKey.keycode
 		end
 	end
 
@@ -90,18 +90,16 @@ function mouse.getClickedPosition()
 end
 
 function mouse.getPosition()
-	return daisy.getMousePosition()
+	return love.mouse.getPosition()
 end
 
 function mouse.getRelativePosition()
-	local width, height = video.getScreenSize()
 	local cx, cy = camera.getPosition()
-	local x, y = daisy.getMousePosition()
-	return x + cx - width / 2, y + cy - height / 2
+	local x, y = love.mouse.getPosition()
+	return x + cx - _w / 2, y + cy - _h / 2
 end
 
 function mouse.getRelativeClickedPosition()
-	local width, height = video.getScreenSize()
 	local cx, cy = camera.getPosition()
-	return mouse.x + cx - width / 2, mouse.y + cy - height / 2
+	return mouse.x + cx - _w / 2, mouse.y + cy - _h / 2
 end

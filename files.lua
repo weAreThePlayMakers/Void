@@ -15,11 +15,8 @@ local mapPath		= settings.paths.maps
                                                                           
 --]]
 
-dofile(entitiesPath .."entity.lua")
-dofile(entitiesPath .."debug_line.lua")
-dofile(entitiesPath .."debug_point.lua")
-dofile(entitiesPath .."player.lua")
-dofile(entitiesPath .."platform.lua")
+require(entitiesPath .."entity")
+require(entitiesPath .."examplebox")
 
 --[[
                                                                                                          
@@ -35,11 +32,6 @@ Y8,        88  ,adPPPPP88  88      88      88  8PP"""""""  8b       88  ,adPPPPP
                                                                                                          
 --]]
 
-gamedata.load("circle", "shapes.dat")
-gamedata.load("pentagon", "shapes.dat")
-gamedata.load("hexagon", "shapes.dat")
-gamedata.load("turret", "shapes.dat")
-gamedata.load("bullet", "shapes.dat")
 
 --[[
                                                        
@@ -55,4 +47,4 @@ gamedata.load("bullet", "shapes.dat")
                                88                      
 --]]
 
-dofile(mapPath .."map.lua")
+require(mapPath .."testmap")
