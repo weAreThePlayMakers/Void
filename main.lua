@@ -6,7 +6,7 @@ _cwd = love.filesystem.getWorkingDirectory()
 require("lib/lib")
 require("gamestate")
 require("settings")
-require("gamedata")
+--require("gamedata") Has not been rewritten for Löve2D
 require("entities")
 require("mapsystem")
 require("files")
