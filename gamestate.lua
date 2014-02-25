@@ -204,6 +204,8 @@ function gamestate.popUpdateState(name)
 	updateStack[name] = nil
 end
 
+-- Fixed updates states act the same as update states with the difference of them being called each fixed update.
+
 function gamestate.addFixedUpdateState(name, func)
 	if not fixedUpdateStack[name] then
 		if func then
