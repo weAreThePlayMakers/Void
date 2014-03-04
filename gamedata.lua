@@ -1,50 +1,23 @@
 
+--Note: Gamedata currently only contains images
+
 gamedata = {}
 
-local gamedataPath = "gamedata/"
 local database = {}
 
-function gamedata.load(dataName, fileName)
+function gamedata.insert(dataName, data)
 	if not database[dataName] then
-		database[dataName] = video.createSpriteState(dataName, gamedataPath ..fileName)
-
-		return dataName
+		database[dataName] = data
 	else
-		print("Gamedata: The gamedata entry with the name of '" ..dataName .."' already exists and so has not been loaded again.")
+		print("Gamedata: The gamedata entry with the name of '" ..dataName .."' already exists.")
 	end
 end
 
---I'VE NOT HAD THE TIME TO FINISH THIS.
---STILL HAS A TON OF PROBLEMS
-
---[[function gamedata.loadSet(dataSet)
-	for i, data in pairs(dataSet) do
-		if not database[data] then
-			database[data] = video.createSpriteState(data, gamedataPath ..data[i].fileName)
-
-			--We render the sprite once to avoid frame breaks during gameplay
-			gamedata.preload[data] = data[i].fileName
-		else
-			print("Gamedata: The gamedata entry with the name of '" ..data .."' already exists and so has not been loaded again.")
-		end
-	end
-end]]
-
-function gamedata.unload(dataName)
+function gamedata.remove(dataName)
 	if database[dataName] then
 		database[dataName] = nil
 	else
-		print("Gamedata: The gamedata entry with the name of '" ..dataName .."' was not found and might already be unloaded.")
-	end
-end
-
-function gamedata.unloadSet(dataSet)
-	for i, data in pairs(dataSet) do
-		if database[data] then
-			database[data] = nil
-		else
-			print("Gamedata: The gamedata entry with the name of '" ..data .."' was not found and might already be unloaded.")
-		end
+		print("Gamedata: The gamedata entry with the name of '" ..dataName .."' was not found or might already be unloaded.")
 	end
 end
 
@@ -52,16 +25,9 @@ function gamedata.unloadAll()
 	database = {}
 end
 
-function gamedata.reload(dataName, fileName)
-	if database[dataName] then
-		database[dataName] = video.createSpriteState(dataName, gamedataPath ..fileName)
-	else
-		print("Gamedata: The gamedata entry with the name of '" ..dataName .."' does not exist and could so not be reloaded.")
-	end
-end
-
 function gamedata.get(name)
 	if(database[name] ~= nil) then
+
 		return database[name]
 	else
 		print("Gamedata: The gamedata entry with the name of '" ..name .."' was not found. Make sure it has been loaded before accessing it.")

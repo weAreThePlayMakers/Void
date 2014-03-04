@@ -2,8 +2,8 @@
 entities = {}
 
 local entitiesPath = settings.paths.entities
-local objects = {}
 local database = {}
+local objects = {}
 local id = 0
 
 local drawStack = {}
@@ -16,7 +16,7 @@ function entities.add(type, func)
 end
 
 --Entities.create is used to instantiate new entities. 
-function entities.create(type, params, ignoreStates, grouping)
+function entities.create(type, params)
 	if(database[type]) then
 		local entity = database[type]()
 
@@ -24,11 +24,7 @@ function entities.create(type, params, ignoreStates, grouping)
 			entity.type = type
 		
 			if mapsystem then
-				if grouping == nil then
-					entity.map = mapsystem.getCurrent()
-				else
-					entity.map = {name = grouping}
-				end
+				entity.map = mapsystem.getCurrent()
 			else
 				--Simply a placeholder if there is no mapsystem.
 				entity.map = {name = "default"}
@@ -51,11 +47,14 @@ function entities.create(type, params, ignoreStates, grouping)
 
 			objects[id] = entity
 
-			if ignoreStates then
-				entity.ignoreStates = ignoreStates
-			else
-				entity.ignoreStates = false
-			end
+			-- The entity state table contains information used to determine certain states of the entity.
+			entity.state = {}
+			entity.state.update = true 		-- If false the entity will not be updated.
+			entity.state.fixedUpdate = true	-- "" but with fixed update instead.
+			entity.state.draw = true		-- If false the entity will not be drawn.
+
+			-- Layers are based on an id system defined in the gamestate file. Either a single number or a table of numbers can be used.
+			entity.state.drawStack = 1
 
 			return objects[id]
 		else
@@ -95,6 +94,10 @@ function entities.destroy(entity, silent)
 	objects[entity.id] = nil
 end
 
+function entities.flush()
+	objects = {}
+end
+
 function entities.removeByMap(mapname)
 	for i, ent in pairs(objects) do
 		if objects[i].map.name == mapname then
@@ -106,11 +109,9 @@ end
 --These functions should be called from the given loops in the main.lua.
 function entities.update(dt)
 	for i, ent in pairs(objects) do
-		if ent.ignoreStates == false then
-			if ent.state.active == true then
-				if ent.map.state.update == true then
-					ent:update(dt)
-				end
+		if ent.ignoreStates == false and ent.update then
+			if ent.state.update == true then
+				ent:update(dt)
 			end
 		else
 			ent:update(dt)
@@ -120,11 +121,9 @@ end
 
 function entities.fixedUpdate(timestep)
 	for i, ent in pairs(objects) do
-		if ent.ignoreStates == false then
-			if ent.state.active == true then
-				if ent.map.state.fixedUpdate == true then
-					ent:fixedUpdate(timestep)
-				end
+		if ent.ignoreStates == false and ent.fixedUpdate then
+			if ent.state.fixedUpdate == true then
+				ent:fixedUpdate(timestep)
 			end
 		else
 			ent:fixedUpdate(timestep)
@@ -134,31 +133,29 @@ end
 
 function entities.draw(layerID, layerName)
 	for i, ent in pairs(objects) do
-		local t = type(ent.state.drawStack)
+		if ent.draw then
+			local t = type(ent.state.drawStack)
 
-		if t ~= "table" then
-			if ent.state.drawStack == layerID or ent.state.drawStack == layerName then
-				if ent.ignoreStates == false then
-					if ent.state.draw then
-						if ent.map.state.draw == true then
-							ent:draw(layerName)
-						end
-					end
-				else
-					ent:draw(layerName)
-				end
-			end
-		else
-			for n, l in pairs(ent.state.drawStack) do
-				if l == layerID or l == layerName then
+			if t ~= "table" then
+				if ent.state.drawStack == layerID or ent.state.drawStack == layerName then
 					if ent.ignoreStates == false then
 						if ent.state.draw then
-							if ent.map.state.draw == true then
-								ent:draw(layerName)
-							end
+							ent:draw(layerName)
 						end
 					else
 						ent:draw(layerName)
+					end
+				end
+			else
+				for n, l in pairs(ent.state.drawStack) do
+					if l == layerID or l == layerName then
+						if ent.ignoreStates == false then
+							if ent.state.draw then
+								ent:draw(layerName)
+							end
+						else
+							ent:draw(layerName)
+						end
 					end
 				end
 			end

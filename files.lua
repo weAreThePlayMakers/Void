@@ -1,6 +1,7 @@
 
 local entitiesPath 	= settings.paths.entities
 local mapPath		= settings.paths.maps
+local graphicsPath	= settings.paths.graphics
 
 --[[
                                                                           
@@ -16,7 +17,7 @@ local mapPath		= settings.paths.maps
 --]]
 
 require(entitiesPath .."entity")
-require(entitiesPath .."examplebox")
+require(entitiesPath .."world")
 
 --[[
                                                                                                          
@@ -46,5 +47,3 @@ Y8,        88  ,adPPPPP88  88      88      88  8PP"""""""  8b       88  ,adPPPPP
                                88                      
                                88                      
 --]]
-
-require(mapPath .."testmap")

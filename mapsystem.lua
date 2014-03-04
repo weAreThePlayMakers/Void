@@ -1,8 +1,17 @@
 
--- WARNING: There are currently a ton of issues with the mapsystem.
---> New maps are loaded on top of others making it hard for the system to handle entities bound to maps.
---> The overlay argument needs more work.
---> Entities should have more options to work together. This means that maps should act as worlds which handle large collision. (Possibly Quad-Trees)
+--[[
+
+	WARNING: There are currently a ton of issues with the mapsystem.
+	--> New maps are loaded on top of others making it hard for the system to handle entities bound to maps.
+	--> The overlay argument needs more work.
+	--> Maps are currently not handling collision for the entities
+	--> Maps are currently saved and loaded in the form of a lua file. A complete rewrite is in order to fix this issue.
+
+
+	Also, because this whole system is currently being rewritten there is no way that it will work in its current state.
+	It is being rewritten to load compact byte based maps instead of lua files which means that a lot of functionality for this
+	implementation is still missing. At the same time, traditional maps can no longer be loaded.
+]]
 
 mapsystem = {}
 
@@ -11,22 +20,30 @@ local database = {}
 local loaded = {}
 local current = {}
 
-function mapsystem.add(name, func)
+function mapsystem.add(name, data)
 	if not database[name] then
-		database[name] = func
+		database[name] = data
 	end
 end
 
-function mapsystem.load(name, overlay)
+function mapsystem.construct(data)
+	local sortedData = {}
+
+	-- Interpret the data here.
+
+	return entities.create("world", sortedData)
+end
+
+function mapsystem.load(name)
 	if database[name] then
 		if loaded.name ~= name then
 			local startTime = os.time()
 
-			map = database[name]()
+			local map = mapsystem.construct(database[name])
 			
 			if not map then
 				if settings.debug == true then
-					print("Mapsystem: Error loading the map with the name of '" ..name .."' due to the map not being returned after loading it.")
+					print("Mapsystem: Error loading the map with the name of '" ..name ..".")
 
 					return
 				end
@@ -36,30 +53,13 @@ function mapsystem.load(name, overlay)
 				map.name = name
 			end
 
-			--Yes, amazing if statements - I am well aware of this crap.
-
-			if map.load then
-				if overlay then
-					if overlay == false then
-						current = map
-					end
-				else
-					current = map
-				end
-
-				loaded[map.name] = map
-						
-				map.load()
-			else
-				if settings.debug == true then
-					print("Mapsystem: The map with the name of '" ..name .."' does not contain a load function and will be ignored.")
-				end
-			end
-
 			if settings.debug == true then
 				print("Mapsystem: Successfully loaded the map with the name of " ..name .."'")
 				print("Mapsystem: The map took '" ..os.time() - startTime .."' seconds to load.")
 			end
+
+			current = map
+			loaded[map.name] = map
 
 			return true
 		else
@@ -113,56 +113,64 @@ function mapsystem.unload(name, unloadAssets)
 end
 
 function mapsystem.update(dt)
-	for i, map in pairs(loaded) do
-		if map.state.update ~= nil then
-			if map.state.update == true then
-				if map.update then
-					map.update(dt)
+	if current.state then
+	--for i, map in pairs(loaded) do
+		if current.state.update ~= nil then
+			if current.state.update == true then
+				if current.update then
+					current.update(dt)
 				end
 			end
 		else
-			if map.update then
-				map.update(dt)
+			if current.update then
+				current.update(dt)
 			end
 		end
+	--end
 	end
 end
 
 function mapsystem.fixedUpdate(timestep)
-	for i, map in pairs(loaded) do
-		if map.state.fixedUpdate ~= nil then
-			if map.state.fixedUpdate == true then
-				if map.fixedUpdate then
-					map.fixedUpdate(timestep)
+	if current.state then
+	--for i, map in pairs(loaded) do
+		if current.state.fixedUpdate ~= nil then
+			if current.state.fixedUpdate == true then
+				if current.fixedUpdate then
+					current.fixedUpdate(timestep)
 				end
 			end
 		else
-			if map.fixedUpdate then
-				map.fixedUpdate(timestep)
+			if current.fixedUpdate then
+				current.fixedUpdate(timestep)
 			end
 		end
+	--end
 	end
 end
 
 function mapsystem.draw(layerID, layerName)
-	for i, map in pairs(loaded) do
-		if map.state.draw ~= nil then
-			if map.state.draw == true then
-				if map.draw then
-					map.draw(layerName)
+	if current.state then
+	--for i, map in pairs(loaded) do
+		if current.state.draw ~= nil then
+			if current.state.draw == true then
+				if current.draw then
+					current.draw(layerName)
 				end
 			end
 		else
-			if map.draw then
-				map.draw(layerName)
+			if current.draw then
+				current.draw(layerName)
 			end
 		end
+	--end
 	end
 end
 
 function mapsystem.getCurrent()
 	return current
 end
+
+--[[ These function are disable for now - we can only have one loaded map at a time for now.
 
 function mapsystem.getAll()
 	return loaded
@@ -198,3 +206,5 @@ function mapsystem.getCachedNames()
 
 	return nametable
 end
+
+]]
