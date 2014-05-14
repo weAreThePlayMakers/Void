@@ -8,7 +8,7 @@ local lastKeycode = -1
 local mouseKeyGroup = {}
 local mousePressedThisUpdate = false
 
---We can use this function to add keys to the table of mousekeys.
+-- We can use this function to add keys to the table of mousekeys.
 function mouse.addKey(name, keycode)
 	if(not mouseKeyGroup[name]) then
 		local mouseKey = {}
@@ -24,7 +24,7 @@ function mouse.addKey(name, keycode)
 	end
 end
 
---Same goes for this function with the difference that it removes keys from the mousekey table.
+-- Same goes for this function with the difference that it removes keys from the mousekey table.
 function mouse.popKey(name)
 	if mouseKeyGroup[name] then
 		mouseKeyGroup[name] = nil
@@ -33,7 +33,7 @@ function mouse.popKey(name)
 	end
 end
 
---Mouse.press is used to register mouse presses. It should be called in the games main.lua/mousePress function.
+-- Mouse.press is used to register mouse presses. It should be called in the games main.lua/mousePress function.
 function mouse.press(x, y, keycode)
 	pressedx = x
 	pressedy = y
@@ -48,8 +48,8 @@ function mouse.press(x, y, keycode)
 	end
 end
 
---Mouse.release releases all keys in the mouseKeys table if they aren't pressed any longer.
---This function should be called done every update.
+-- Mouse.release releases all keys in the mouseKeys table if they aren't pressed any longer.
+-- This function should be called done every update.
 function mouse.release()
 	for i, mouseKey in pairs(mouseKeyGroup) do
 		if not love.mouse.isDown(mouseKey.keycode) then
@@ -62,14 +62,14 @@ function mouse.release()
 	end
 end
 
---The core of the whole system. Calling this function returns a boolean value of true if the mousekey with the specified name is pressed.
+-- The core of the whole system. Calling this function returns a boolean value of true if the mousekey with the specified name is pressed.
 function mouse.check(name)
 	if mouseKeyGroup[name] then
 		return mouseKeyGroup[name].pressed
 	end
 end
 
---This function checks if any of the registered keys are being pressed at the moment.
+-- This function checks if any of the registered keys are being pressed at the moment.
 function mouse.checkAny()
 	for i, mouseKey in pairs(mouseKeyGroup) do
 		if mouseKey.pressed then
@@ -80,7 +80,7 @@ function mouse.checkAny()
 	return -1
 end
 
---Use this function to check if a key was pressed even if it is not in the table of registered keys.
+-- Use this function to check if a key was pressed even if it is not in the table of registered keys.
 function mouse.checkKeycode()
 	return lastKeycode
 end

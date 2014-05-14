@@ -28,22 +28,22 @@ local function create()
 	end
 
 	-- Dynamic entities can handle their collision through this function.
-	function world:handleCollision(entity, type)
+	function world:handleCollision(collider)
 		-- Entities can call this function to let their collision get handled by the world.
 		-- Do quadtree collision checking here.
 
 		-- Convert the different collision types and then check them against eachother.
 		-- First perform static collision checking and then dynamic collision checking.
 
-		if type == "box" then
+		if collider.collisionType == "box" then
 
-		elseif type == "circle" then
+		elseif collider.collisionType == "circle" then
 
-		elseif type == "mesh" then
+		elseif collider.collisionType == "mesh" then
 
-		elseif type == "pixel" then
+		elseif collider.collisionType == "pixel" then
 
-		elseif type == "ray" then
+		elseif collider.collisionType == "ray" then
 
 		end
 	end

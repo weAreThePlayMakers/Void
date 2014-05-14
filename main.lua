@@ -20,15 +20,7 @@ _running = true
 
 _w, _h = love.graphics.getDimensions()
 
-local multiplyshader
-
---//////////////////
---/////  LOAD  /////
---//////////////////
-
 function love.load()
-	multiplyshader = love.graphics.newShader("shaders/multiply.fsh")
-
 	gamedata.insert("testimage", love.graphics.newImage(settings.paths.gamedata .."catlinman.jpg"))
 
 	-- We load the settings from the settings.lua file.
@@ -79,10 +71,6 @@ function love.load()
 	collectgarbage("setpause", 105)
 end
 
---//////////////////
---///// UPDATE /////
---//////////////////
-
 function love.update(dt)
 	-- If lag gets too high we halt the game. This is not the best idea but it keeps the game more stable.
 	-- TODO: Add a lagcache to check if a player is lagging too much. If this is the case -> disable the lag check.
@@ -112,12 +100,7 @@ function love.update(dt)
 	end
 end
 
---//////////////////
---////// DRAW //////
---//////////////////
-
 function love.draw()
-	love.graphics.setShader(multiplyshader)
 
 	-- Translating the camera
 	love.graphics.translate(-camera.get().x / camera.get().sx + _w / 2, -camera.get().y / camera.get().sy + _h / 2)
@@ -133,10 +116,6 @@ function love.draw()
 
 	love.graphics.setShader()
 end
-	
---//////////////////
---/////  KEYS  /////
---//////////////////
 
 function love.keypressed(keycode)
 	keys.press(keycode)

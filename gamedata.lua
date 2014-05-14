@@ -1,5 +1,5 @@
 
---Note: Gamedata currently only contains images
+-- Note: Gamedata currently only contains images
 
 gamedata = {}
 

@@ -5,9 +5,9 @@ Void is a free game project created by Catlinman. The [LÖVE2D](https://love2d.o
 
 Collaborators
 --------------
-**Catlinman** <br/>
-- [Twitter](https://twitter.com/Catlinman_)<br/>
-- [Tumblr Blog](http://xcatlinman.tumblr.com/)<br/>
+**[Catlinman](http://catlinman.com/)** <br/>
+**[Aconitin](http://www.svenraveny.net/)** <br/>
+**[Jokler](https://twitter.com/jokler13)** <br/>
 
 Licence
 --------------

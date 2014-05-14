@@ -1,6 +1,5 @@
 
 --[[
-
 	WARNING: There are currently a ton of issues with the mapsystem.
 	--> New maps are loaded on top of others making it hard for the system to handle entities bound to maps.
 	--> The overlay argument needs more work.
@@ -11,7 +10,7 @@
 	Also, because this whole system is currently being rewritten there is no way that it will work in its current state.
 	It is being rewritten to load compact byte based maps instead of lua files which means that a lot of functionality for this
 	implementation is still missing. At the same time, traditional maps can no longer be loaded.
-]]
+--]]
 
 mapsystem = {}
 
@@ -170,41 +169,41 @@ function mapsystem.getCurrent()
 	return current
 end
 
---[[ These function are disable for now - we can only have one loaded map at a time for now.
+--[[
+	These function are disabled for now - we can only have one loaded map at a time for now.
 
-function mapsystem.getAll()
-	return loaded
-end
+	function mapsystem.getAll()
+		return loaded
+	end
 
-function mapsystem.getByName(name)
-	if loaded[name] then
-		return loaded[name]
-	else
-		if settings.debug == true then
-			print("Mapsystem: The map with the name of " ..name .." was not found in the loaded maps table.")
+	function mapsystem.getByName(name)
+		if loaded[name] then
+			return loaded[name]
+		else
+			if settings.debug == true then
+				print("Mapsystem: The map with the name of " ..name .." was not found in the loaded maps table.")
+			end
 		end
 	end
-end
 
---Returns the names of the loaded and cached maps.
-function mapsystem.getLoadedNames()
-	local nametable = {}
+	--Returns the names of the loaded and cached maps.
+	function mapsystem.getLoadedNames()
+		local nametable = {}
 
-	for i, map in pairs(loaded) do
-		nametable[i] = map.name
+		for i, map in pairs(loaded) do
+			nametable[i] = map.name
+		end
+
+		return nametable
 	end
 
-	return nametable
-end
+	function mapsystem.getCachedNames()
+		local nametable = {}
 
-function mapsystem.getCachedNames()
-	local nametable = {}
+		for i, map in pairs(database) do
+			map.name = nametable[i]
+		end
 
-	for i, map in pairs(database) do
-		map.name = nametable[i]
+		return nametable
 	end
-
-	return nametable
-end
-
-]]
+--]]
