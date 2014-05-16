@@ -9,7 +9,7 @@ local mouseKeyGroup = {}
 local mousePressedThisUpdate = false
 
 -- We can use this function to add keys to the table of mousekeys.
-function mouse.addKey(name, keycode)
+function mouse.add(name, keycode)
 	if(not mouseKeyGroup[name]) then
 		local mouseKey = {}
 
@@ -17,6 +17,7 @@ function mouse.addKey(name, keycode)
 		mouseKey.keycode = keycode
 
 		mouseKey.pressed = false
+		mouseKey.callbacks = {}
 
 		mouseKeyGroup[mouseKey.name] = mouseKey
 	else
@@ -25,11 +26,24 @@ function mouse.addKey(name, keycode)
 end
 
 -- Same goes for this function with the difference that it removes keys from the mousekey table.
-function mouse.popKey(name)
+function mouse.pop(name)
 	if mouseKeyGroup[name] then
 		mouseKeyGroup[name] = nil
-	else
-		print("The mouse key with the name of " ..name .." was not found.")
+	end
+end
+
+-- Add the callbacks to be executed when a mouse key is pressed
+function mouse.addCallback(name, callbackname, callback)
+	if mouseKeyGroup[name] then
+		mouseKeyGroup[name].callbacks[callbackname] = callback
+	end
+end
+
+function mouse.popCallback(name, callbackname)
+	if mouseKeyGroup[name] then
+		if mouseKeyGroup[name].callbacks[callbackname] then
+			mouseKeyGroup[name].callbacks[callbackname] = nil
+		end
 	end
 end
 
@@ -42,6 +56,10 @@ function mouse.press(x, y, keycode)
 	for i, mouseKey in pairs(mouseKeyGroup) do
 		if(keycode == mouseKey.keycode) then
 			mouseKey.pressed = true
+
+			for l, func in pairs(mouseKey.callbacks) do
+				func()
+			end
 
 			return
 		end

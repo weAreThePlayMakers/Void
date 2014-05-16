@@ -27,12 +27,12 @@ function love.load()
 	settings.load()
 
 	-- Register all required keys and assign the different keycode combinations
-	keys.addKey("up", 38)
-	keys.addKey("down", 40)
-	keys.addKey("left", 37)
-	keys.addKey("right", 39)
+	keys.add("up", 38)
+	keys.add("down", 40)
+	keys.add("left", 37)
+	keys.add("right", 39)
 
-	mouse.addKey("lpress", "l")
+	mouse.add("lpress", "l")
 
 	-- Create three base game states which will serve as entry and exit points inside the game.
 	-- We also give them some hooks to better handle game events.
