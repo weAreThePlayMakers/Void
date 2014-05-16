@@ -15,20 +15,15 @@ function entities.add(type, func)
 	end
 end
 
--- Entities.create is used to instantiate new entities. 
-function entities.create(type, params)
+-- Entities.create is used to instantiate new entities.
+-- If a parent is supplied the entity will ignored by base update and draw states. More on that in further down.
+
+function entities.create(type, params, parent)
 	if database[type] then
 		local entity = database[type]()
 
 		if entity ~= nil then
 			entity.type = type
-		
-			if mapsystem then
-				entity.map = mapsystem.getCurrent()
-			else
-				-- Simply a placeholder if there is no mapsystem.
-				entity.map = {name = "default"}
-			end
 
 			if entity.construct then
 				if params then 
@@ -42,18 +37,34 @@ function entities.create(type, params)
 				end
 			end
 
+			entity.parent = parent or nil
+
 			id = id + 1
 			entity.id = id
 
 			objects[id] = entity
 
-			--  The entity state table contains information used to determine certain states of the entity.
-			entity.state = {}
-			entity.state.update = true 		--  If false the entity will not be updated.
-			entity.state.fixedUpdate = true	--  "" but with fixed update instead.
-			entity.state.draw = true		--  If false the entity will not be drawn.
+			--[[
+				The entity state table contains information used to determine certain states of the entity.
 
-			--  Layers are based on an id system defined in the gamestate file. Either a single number or a table of numbers can be used.
+				If the entity has a parent the parent takes over the entities update and draw function handling.
+				This is usefull when working with world entities or particle system which maintain each of their children
+				outside of the main games entity system.
+			--]]
+
+			entity.state = {}
+
+			if entity.parent then
+				entity.state.update = true 		--  If false the entity will not be updated.
+				entity.state.fixedUpdate = true	--  If false the entity will not be updated in the fixed update loop.
+				entity.state.draw = true		--  If false the entity will not be drawn.
+			else
+				entity.state.update = false
+				entity.state.fixedUpdate = false
+				entity.state.draw = false
+			end
+
+			-- Layers are based on an id system defined in the gamestate file. Either a single number or a table of numbers can be used.
 			entity.state.drawStack = 1
 
 			return objects[id]
@@ -72,7 +83,6 @@ end
 
 --[[
 	This can be used to create new entities without making them show up in the game.
-
 	The main purpose is to be able to create new entities in another entity and to extend its functionality.
 --]]
 
@@ -83,13 +93,6 @@ function entities.extend(type)
 		return entity
 	end
 end
-
---[[
-	Entities can be removed from the game by using either one of these functions. It should be taken into respect that remove entities by map
-	should be used in combination with the mapsystem file. Otherwise all entities will be assigned to a default map. This means that if there
-	is no mapsystem in place and the removeByMap function is called all entities will be destroyed.
-	The silent argument allows the entity to be destroyed without calling it's onDestroy method. This should not be abused as it can cause the entity to break the game logic.
---]]
 
 function entities.destroy(entity, silent)
 	if not silent then entity:onDestroy() end
@@ -102,10 +105,10 @@ function entities.flush()
 	objects = {}
 end
 
-function entities.removeByMap(mapname)
-	for i, ent in pairs(objects) do
-		if objects[i].map.name == mapname then
-			entities.destroy(ent, true)
+function entities.removeByTable(t)
+	for i, ent in pairs(t) do
+		if objects[t.id] then
+			entities.destroy(objects[t.id], true)
 		end
 	end
 end
@@ -167,7 +170,7 @@ function entities.draw(layerID, layerName)
 	end
 end
 
---  This function is used to update the current draw stack so that entities can interface with the layer based drawing we created.
+-- This function is used to update the current draw stack so that entities can interface with the layer based drawing we created.
 
 function entities.updateDrawStack(stack)
 	drawStack = stack
