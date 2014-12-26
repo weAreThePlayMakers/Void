@@ -5,7 +5,12 @@ local function create()
 	world.objects = {}	-- Objects that simply need to be drawn go in here.
 	world.colliders = {} -- Objects with collision should go in this table.
 	world.quadtree = {}	-- The quadtree splits the scene into multiple parts allowing faster collision detection by the world.
-
+	world.dimensions = {}
+	world.dimensions.x = 0
+	world.dimensions.y = 0
+	world.dimensions.w = 3000
+	world.dimensions.h = 3000
+	
 	function world:createQuadTree()
 		-- Construct a new quadtree here.
 	end

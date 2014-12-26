@@ -101,7 +101,6 @@ function love.update(dt)
 end
 
 function love.draw()
-
 	-- Translating the camera
 	love.graphics.translate(-camera.get().x / camera.get().sx + _w / 2, -camera.get().y / camera.get().sy + _h / 2)
 	love.graphics.scale(1 / camera.get().sx, 1 / camera.get().sy)
@@ -110,9 +109,6 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 255)
 
 	gamestate.draw()
-	for i=0, 16 do
-		love.graphics.draw(gamedata.get("testimage"), -512 + (256 * i - 1), -385 + (256 * i - 1))
-	end
 
 	love.graphics.setShader()
 end

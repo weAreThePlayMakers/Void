@@ -3,15 +3,17 @@ entities = {}
 
 local entitiesPath = settings.paths.entities
 local database = {}
+local idlink = {}
 local objects = {}
 local id = 0
 
 local drawStack = {}
 
 -- Use this function to add new files to the entity register. Should be done at the end of newly loaded files.
-function entities.add(type, func)
+function entities.add(type, func, id)
 	if not database[type] then
 		database[type] = func
+		idlink[id] = type
 	end
 end
 
